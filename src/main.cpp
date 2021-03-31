@@ -1,10 +1,6 @@
 // 必要なものをインクルード
-#include <stdio.h>
-#include <stdlib.h>
-#include <GL/glew.h>
+#include <iostream>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-using namespace glm;
 
 int main( void )
 {
@@ -16,9 +12,9 @@ int main( void )
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_SAMPLES, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 
     // ウィンドウを開いて、OpenGLコンテキストを作成
@@ -32,21 +28,13 @@ int main( void )
 	}
 	glfwMakeContextCurrent(window);
 
-	// GLEWを初期化
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "GLEWの初期化に失敗しました\n");
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-
 	// 押されているEscキーをキャプチャできることを確認
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// 青黒い背景を設定
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	do{
+	while(glfwWindowShouldClose(window) == GL_FALSE) {	
         // スクリーンをクリア。
 		glClear( GL_COLOR_BUFFER_BIT );
 
@@ -55,13 +43,8 @@ int main( void )
 		
 		// バッファーをスワップ
 		glfwSwapBuffers(window);
-		glfwPollEvents();
-
+		glfwWaitEvents();
 	} 
-    // ESCキーが押されたか、ウィンドウが閉じたかを確認
-	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(window) == 0 );
-
 	// OpenGLウィンドウを閉じ、GLFWを終了
 	glfwTerminate();
 
