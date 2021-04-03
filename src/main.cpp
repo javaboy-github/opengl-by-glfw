@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <vector>
+#include <iostream>
 using namespace glm;
 
 // プログラムオブジェクトを作成します
@@ -42,6 +44,26 @@ GLuint createProgram(const char *vsrc, const char *fsrc) {
 
 	// 作成したプログラムオブジェクトを返す
 	return program;
+}
+
+// シェーダオブジェクトのコンパイル結果を表示する
+// @param shader シェーダオブジェクト名
+// @param str コンパイルエラーが発生した場所を示す文字列
+GLboolean printShaderInfoLog(GLuint shader, const char *str) {
+	// コンパイル結果を表示する
+	GLint status;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	if (status ==  GL_FALSE) std::cerr << "Compile Error in " << str <<   std::endl;
+	// シェーダのコンパイル時のログの長さを取得する
+	GLsizei bufSize;	
+	glGetShaderiv(shader, GL_INFO_LOG_LENGTH , &bufSize);
+	if (bufSize > 1) {
+		std::vector<GLchar> infoLog(bufSize);
+		GLsizei length;
+		glGetShaderInfoLog(shader, bufSize, &length, &infoLog[0]);
+		std::cerr <<   &infoLog[0] <<   std::endl;
+	}
+	return static_cast<GLboolean>(status);
 }
 
 int main( void )
