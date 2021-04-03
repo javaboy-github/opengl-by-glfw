@@ -84,23 +84,30 @@ int main( void )
 	// 青黒い背景を設定
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	// GLSLを読み込む
-	const GLuint program(glCreateProgram());
-	static const GLchar *vsrc[] = {
-		"#version 150 core\n",
-		"in vec4 position;",
-		"void main()",
-		"{",
-		"  gl_Position = position",
-		"}"
-	};
+	static const GLchar vsrc[] =
+		"#version 150 core\n"
+		"in vec4 position;"
+		"void main()"
+		"{"
+		"  gl_Position = position;"
+		"}";
+	static const GLchar fsrc[] =
+		"#version 150 core\n"
+		"out vec4 fragment;"
+		"void main()"
+		"{"
+		"  fragment = vec4(1.0, 0.0, 0.0, 1.0);"
+		"}";
+	const GLuint program(createProgram(vsrc, fsrc));
+
+
 	
 	do{
         // スクリーンをクリア。
 		glClear( GL_COLOR_BUFFER_BIT );
 
-		// 描画処理(今は特に何も描画しない)
-
+		// シェーダプログラムの使用開始
+		glUseProgram(program);
 		
 		// バッファーをスワップ
 		glfwSwapBuffers(window);
