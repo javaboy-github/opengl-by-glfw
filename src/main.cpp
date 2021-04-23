@@ -1,12 +1,12 @@
 // 必要なものをインクルード
-#include <stdio.h>
-#include <stdlib.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>
 #include <iostream>
-using namespace glm;
+#include <fstream>
+
+#include "main.hpp"
 
 // プログラムオブジェクトを作成します
 // @param vsrc バーテックスシェーダのソースプログラムの文字列
@@ -17,13 +17,14 @@ GLuint createProgram(const char *vsrc, const char *fsrc) {
 	const GLuint program(glCreateProgram());
 	
 	if (vsrc != NULL ){
-		// バーテックスシェーダのシェーダオブジェクトを作成シェーダのシェーダオブジェクトを作成するシェーダオブジェクトを作成する
+		// バーテックスシェーダのシェーダオブジェクトを作成する
 		const GLuint vobj(glCreateShader(GL_VERTEX_SHADER));
 		glShaderSource(vobj, 1, &vsrc, NULL);
 		glCompileShader(vobj);
 	
 		// バーテックスシェーダのシェーダオブジェクトをプログラムオブジェクトに組み込む
-		glAttachShader(program, vobj);
+		if (printShaderInfoLog(vobj, "vertex shader"))
+			glAttachShader(program, vobj);
 		glDeleteShader(vobj);
 	} 
 	if (fsrc != NULL) {
@@ -33,7 +34,8 @@ GLuint createProgram(const char *vsrc, const char *fsrc) {
 		glCompileShader(fobj);
 
 		// フラグメントシェーダのシェーダオブジェクトをプログラムオブジェクトに組み込む
-		glAttachShader(program, fobj);
+		if (printShaderInfoLog(fobj, "fragment shader"))
+			glAttachShader(program, fobj);
 		glDeleteShader(fobj);
 	}
 
@@ -43,7 +45,12 @@ GLuint createProgram(const char *vsrc, const char *fsrc) {
 	glLinkProgram(program);
 
 	// 作成したプログラムオブジェクトを返す
-	return program;
+	if (printProgramInfoLog(program))
+		return program;
+
+	// プログラムオブジェクトが作成できなければ 0 を返す
+	glDeleteShader(program);
+	return 0;
 }
 
 // シェーダオブジェクトのコンパイル結果を表示する
@@ -66,11 +73,33 @@ GLboolean printShaderInfoLog(GLuint shader, const char *str) {
 	return static_cast<GLboolean>(status);
 }
 
-int main( void )
-{
+// プログラムオブジェクトのリンク結果を表示する
+// @param program プログラムオブジェクトの名前
+GLboolean printProgramInfoLog(GLuint program) {
+	// リンク結果を取得する
+	GLint status;
+	glGetShaderiv(program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+		std::cerr << "Link error." << std::endl;
+
+	// シェーダのリンク時のログの長さを取得する
+	GLsizei bufSize;
+	glGetShaderiv(program, GL_INFO_LOG_LENGTH, &bufSize);
+
+	if (bufSize > 1) {
+		// シェーダのリンク時のログの内容を取得する
+		std::vector<GLchar> infoLog(bufSize);
+		GLsizei length;
+		glGetProgramInfoLog(program, bufSize, &length, &infoLog[0]);
+		std::cerr << &infoLog[0] << std::endl;
+	}
+
+	return static_cast<GLboolean>(status);
+}
+
+int main( void ) {
 	// GLFWを初期化
-	if( !glfwInit() )
-	{
+	if( !glfwInit() ) {
 		fprintf( stderr, "GLFWの初期化に失敗しました\n" );
 		getchar();
 		return -1;
@@ -81,8 +110,8 @@ int main( void )
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 
-    // ウィンドウを開いて、OpenGLコンテキストを作成
-    GLFWwindow* window;
+	// ウィンドウを開いて、OpenGLコンテキストを作成
+	GLFWwindow* window;
 	window = glfwCreateWindow( 1024, 768, "opengl-example", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "GLFWウィンドウを開くことに失敗しました。 もし、あなたがIntelGPUを使っているなら、それらはOpenGL 3.3と互換性がありません。バージョン2.1を試して下さい。\n" );
