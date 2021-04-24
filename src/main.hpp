@@ -10,3 +10,5 @@ GLuint createProgram(const char *vs);
 GLboolean printShaderInfoLog(GLuint shader, const char *str);
 int main();
 GLboolean printProgramInfoLog(GLuint program);
+GLuint createProgram(const char *vsrc, const char *fsrc);
+bool readShaderSource(const char *name, std::vector<GLchar> &buffer);

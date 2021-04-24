@@ -15,13 +15,13 @@
 GLuint createProgram(const char *vsrc, const char *fsrc) {
 	// プログラムを作成する
 	const GLuint program(glCreateProgram());
-	
+
 	if (vsrc != NULL ){
 		// バーテックスシェーダのシェーダオブジェクトを作成する
 		const GLuint vobj(glCreateShader(GL_VERTEX_SHADER));
 		glShaderSource(vobj, 1, &vsrc, NULL);
 		glCompileShader(vobj);
-	
+
 		// バーテックスシェーダのシェーダオブジェクトをプログラムオブジェクトに組み込む
 		if (printShaderInfoLog(vobj, "vertex shader"))
 			glAttachShader(program, vobj);
@@ -51,6 +51,21 @@ GLuint createProgram(const char *vsrc, const char *fsrc) {
 	// プログラムオブジェクトが作成できなければ 0 を返す
 	glDeleteShader(program);
 	return 0;
+}
+
+// シェーダのソースファイルを読み込んでプログラムオブジェクトを作成する
+// @param vert バーティクスシェーダのソースファイル名
+// @param frag フラグメントシェーダのソースファイル名
+// @return プログラムオブジェクト
+GLuint loadProgram(const char *vert, const char *frag) {
+	// シェーダのソースファイルを読み込む
+	std::vector<GLchar> vsrc;
+	const bool vstat(readShaderSource(vert, vsrc));
+	std::vector<GLchar> fsrc;
+	const bool fstat(readShaderSource(frag, fsrc));
+
+	// プログラムオブジェクトを作成する
+	return vstat && fstat ? createProgram(vsrc.data(), fsrc.data()) : 0;
 }
 
 // シェーダオブジェクトのコンパイル結果を表示する
@@ -97,6 +112,25 @@ GLboolean printProgramInfoLog(GLuint program) {
 	return static_cast<GLboolean>(status);
 }
 
+// シェーダのソースファイルを読み込んだメモリを返す
+// @param name シェーダのソースファイル名
+// @param buffer 読み込んだソースファイルのテキスト
+// @return 読み込めたらtrue
+bool readShaderSource(const char *name, std::vector<GLchar> &buffer) {
+	// ファイル名がnullの場合
+	if (name == NULL)
+		return false;
+
+	// ソースファイルを開く
+	std::ifstream file(name, std::ios::binary);
+	if (file.fail()) {
+		// 開けなかった場合
+		std::cerr << "Error: Can't open source file: " << name << std::endl;
+		return false;
+	}
+
+}
+
 int main( void ) {
 	// GLFWを初期化
 	if( !glfwInit() ) {
@@ -135,39 +169,25 @@ int main( void ) {
 	// 青黒い背景を設定
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	static const GLchar vsrc[] =
-		"#version 150 core\n"
-		"in vec4 position;"
-		"void main()"
-		"{"
-		"  gl_Position = position;"
-		"}";
-	static const GLchar fsrc[] =
-		"#version 150 core\n"
-		"out vec4 fragment;"
-		"void main()"
-		"{"
-		"  fragment = vec4(1.0, 0.0, 0.0, 1.0);"
-		"}";
-	const GLuint program(createProgram(vsrc, fsrc));
+	const GLuint program(loadProgram("point.vert", "point.frag"));
 
 
-	
+
 	do{
-        // スクリーンをクリア。
+		// スクリーンをクリア。
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		// シェーダプログラムの使用開始
 		glUseProgram(program);
-		
+
 		// バッファーをスワップ
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	} 
-    // ESCキーが押されたか、ウィンドウが閉じたかを確認
+	// ESCキーが押されたか、ウィンドウが閉じたかを確認
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0 );
+			glfwWindowShouldClose(window) == 0 );
 
 	// OpenGLウィンドウを閉じ、GLFWを終了
 	glfwTerminate();
