@@ -5,8 +5,17 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <memory>
+#include "Shape.h"
 
 #include "main.hpp"
+
+constexpr Object::Vertex rectangleVertex[] = {
+	{-0.5f, -0.5f},
+	{ 0.5f, -0.5f},
+	{-0.5f,  0.5f},
+	{ 0.5f,  0.5f},
+};
 
 // プログラムオブジェクトを作成します
 // @param vsrc バーテックスシェーダのソースプログラムの文字列
@@ -173,12 +182,17 @@ int main( void ) {
 
 
 
+	// 図形データの作成
+	std::unique_ptr<const Shape> shape(new Shape(2, 4, rectangleVertex));
 	do{
 		// スクリーンをクリア。
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		// シェーダプログラムの使用開始
 		glUseProgram(program);
+
+		// 図形の描画
+		shape->draw();
 
 		// バッファーをスワップ
 		glfwSwapBuffers(window);

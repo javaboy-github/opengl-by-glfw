@@ -43,6 +43,7 @@ set(ALL_LIBS
 	glfw
 	GLEW_1130
 )
+set(CMAKE_CXX_FLAGS "-std=c++11")
 
 add_definitions(
 	-DTW_STATIC
