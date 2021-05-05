@@ -12,10 +12,15 @@
 
 constexpr Object::Vertex rectangleVertex[] = {
 	{-0.5f, -0.5f},
+	{   0 , -0.7f},
 	{ 0.5f, -0.5f},
-	{-0.5f,  0.5f},
+	{ 0.7f,    0 },
 	{ 0.5f,  0.5f},
+	{   0 ,  0.7f},
+	{-0.5f,  0.5f},
+	{-0.7f,    0 },
 };
+constexpr int vertexNumber = sizeof(rectangleVertex) / sizeof(rectangleVertex[0]);
 
 // プログラムオブジェクトを作成します
 // @param vsrc バーテックスシェーダのソースプログラムの文字列
@@ -155,7 +160,7 @@ int main( void ) {
 
 	// ウィンドウを開いて、OpenGLコンテキストを作成
 	GLFWwindow* window;
-	window = glfwCreateWindow( 1024, 768, "opengl-example", NULL, NULL);
+	window = glfwCreateWindow( 768, 768, "opengl-example", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "GLFWウィンドウを開くことに失敗しました。 もし、あなたがIntelGPUを使っているなら、それらはOpenGL 3.3と互換性がありません。バージョン2.1を試して下さい。\n" );
 		getchar();
@@ -178,12 +183,13 @@ int main( void ) {
 	// 青黒い背景を設定
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	const GLuint program(loadProgram("point.vert", "point.frag"));
+    // const GLuint program(loadProgram("point.vert", "point.frag"));
+    const GLuint program(loadProgram("point.vert", "point.frag"));
 
 
 
 	// 図形データの作成
-	std::unique_ptr<const Shape> shape(new Shape(2, 4, rectangleVertex));
+	std::unique_ptr<const Shape> shape(new Shape(2, vertexNumber, rectangleVertex));
 	do{
 		// スクリーンをクリア。
 		glClear( GL_COLOR_BUFFER_BIT );
