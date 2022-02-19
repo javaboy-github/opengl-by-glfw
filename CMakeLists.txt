@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.22)
 project(opengl-by-glfw)
 
 set(CMAKE_TOOLCHAIN_FILE "/Users/eita/build/vcpkg/scripts/buildsystems/vcpkg.cmake")
@@ -8,3 +8,5 @@ conan_basic_setup()
 find_package(OpenGL REQUIRED)
 
 add_executable(opengl-by-glfw src/main.cpp)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
