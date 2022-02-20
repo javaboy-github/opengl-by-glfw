@@ -46,7 +46,7 @@ int main() {
 
 	Window window(1260, 960, "opengl-by-glfw");
 
-	for (int i=0;i<1000000;i++){}
+	for (long i=0L;i<10000000000L;i++){}
 
 	glfwTerminate();
 	glfwSetErrorCallback(NULL);
