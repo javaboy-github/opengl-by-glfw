@@ -25,6 +25,8 @@ class Window {
 	GLFWwindow* getWindow() const {return window;}
 	void show() {glfwShowWindow(window);}
 	void hide() {glfwHideWindow(window);}
+
+	operator GLFWwindow*() const {return window;}
 	
 	~Window() {
 		glfwDestroyWindow(window);
@@ -45,8 +47,13 @@ int main() {
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 	Window window(1260, 960, "opengl-by-glfw");
+	window.show();
 
-	for (long i=0L;i<10000000000L;i++){}
+	for(;;){
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
 
 	glfwTerminate();
 	glfwSetErrorCallback(NULL);
