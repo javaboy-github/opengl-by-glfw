@@ -1,3 +1,5 @@
+#include <fstream>
+#include <ios>
 #include <string>
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -65,4 +67,23 @@ namespace program {
 		void set(std::string name, int value) {glUniform1i(getLoc(name), value);}
 		void set(std::string name, float value) {glUniform1f(getLoc(name), value);}
 	};
+	
+	Program createFromSourcefile(std::string vertexShaderSourceFilename, std::string fragmentShaderSourceFilename) {
+		std::ifstream vifs(vertexShaderSourceFilename, std::ios::in);
+		std::string lineBuffer;
+		std::string vertexShaderSource;
+		while(std::getline(vifs, lineBuffer)) {
+			vertexShaderSource.append(lineBuffer);
+		}
+		vifs.close();
+
+		std::ifstream fifs(fragmentShaderSourceFilename, std::ios::in);
+		std::string fragmentShaderSource;
+		while(std::getline(fifs, lineBuffer)) {
+			fragmentShaderSource.append(lineBuffer);
+		}
+		fifs.close();
+
+		return Program(vertexShaderSource, fragmentShaderSource);
+	}
 }
