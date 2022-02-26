@@ -19,14 +19,13 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-
 conan_cmake_autodetect(settings)
+conan_cmake_setup_conanfile(CONANFILE conanfile.txt)
 
-conan_cmake_run(CONANFILE conanfile.txt
-                BASIC_SETUP CMAKE_TARGETS
-                BUILD missing
-                ARCH armv8
-                ) # setting for m1 mac
+conan_cmake_install(PATH_OR_REFERENCE .
+                    BUILD missing
+                    REMOTE conancenter
+                    SETTINGS ${settings})
 
 find_package(OpenGL REQUIRED)
 
