@@ -3,13 +3,10 @@
 #include <string>
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "program.hpp"
 
 namespace program {
-	class Program {
-		public:
-		const GLuint program;
-
-		Program(std::string vertex, std::string fragment): program(glCreateProgram()) {
+	Program::Program(std::string vertex, std::string fragment): program(glCreateProgram()) {
 			const char *vertexCChar = vertex.c_str();
 			GLuint vobj = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vobj, 1, &vertexCChar, NULL);
@@ -51,22 +48,19 @@ namespace program {
 			glLinkProgram(program);
 		};
 
-		void use() {
+		void Program::use() {
 			glUseProgram(this->program);
 		}
 
-		private:
-		GLint getLoc(std::string name) {
+		GLint Program::getLoc(std::string name) {
 			GLint location = glGetUniformLocation(program, name.c_str());
 			if (location == -1) throw "This uniform not found" + name;
 			return location;
 		}
 
-		public:
-		void set(std::string name, bool value) {glUniform1i(getLoc(name), value);}
-		void set(std::string name, int value) {glUniform1i(getLoc(name), value);}
-		void set(std::string name, float value) {glUniform1f(getLoc(name), value);}
-	};
+		void Program::set(std::string name, bool value) {glUniform1i(getLoc(name), value);}
+		void Program::set(std::string name, int value) {glUniform1i(getLoc(name), value);}
+		void Program::set(std::string name, float value) {glUniform1f(getLoc(name), value);}
 	
 	Program createFromSourcefile(std::string vertexShaderSourceFilename, std::string fragmentShaderSourceFilename) {
 		std::ifstream vifs(vertexShaderSourceFilename, std::ios::in);
