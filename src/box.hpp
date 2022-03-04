@@ -15,8 +15,8 @@ namespace box {
 	
 	class NormalBox: Box {
 		private:
-			const GLuint vao;
-			const GLuint vbo;
+			GLuint vao;
+			GLuint vbo;
 
 		public:
 			NormalBox(glm::vec3 pos, glm::vec3 boxSize, program::Program program);
