@@ -9,7 +9,7 @@ namespace program {
 
 			Program(std::string vertex, std::string fragment);
 
-			void use();
+			void use() const;
 		private:
 			GLint getLoc(std::string name);
 		public:

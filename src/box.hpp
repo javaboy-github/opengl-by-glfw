@@ -17,9 +17,10 @@ namespace box {
 		private:
 			GLuint vao;
 			GLuint vbo;
+			GLuint ibo;
 
 		public:
-			NormalBox(glm::vec3 pos, glm::vec3 boxSize, program::Program program);
+			NormalBox(glm::vec3 pos, glm::vec3 boxSize, program::Program& program);
 			~NormalBox();
 	};
 }

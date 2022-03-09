@@ -48,7 +48,7 @@ namespace program {
 			glLinkProgram(program);
 		};
 
-		void Program::use() {
+		void Program::use() const {
 			glUseProgram(this->program);
 		}
 
