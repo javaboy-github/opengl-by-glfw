@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include "box.hpp"
+#include "program.hpp"
 
 class Window {
 	private:
@@ -48,9 +50,39 @@ int main() {
 
 	Window window(1260, 960, "opengl-by-glfw");
 	window.show();
+	program::Program program(R"(
+#version 150 core
 
-	for(;;){
+uniform mat4 modelview;
+uniform mat4 projection;
+uniform float t;
+in vec4 position;
+in vec4 color;
+out vec4 vertex_color;
+void main()
+{
+  vertex_color = color;
+  gl_Position = projection * modelview * position;
+}
+				)", R"(
+#version 150 core
+
+in vec4 vertex_color;
+out vec4 fragment;
+uniform float t;
+
+void main() {
+fragment = vertex_color;
+}
+)");
+	box::NormalBox box(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), program);
+
+	while (glfwWindowShouldClose(window) == GL_FALSE) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		box.draw();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

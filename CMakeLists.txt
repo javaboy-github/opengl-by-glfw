@@ -31,6 +31,6 @@ conan_cmake_install(PATH_OR_REFERENCE ..
 
 find_package(OpenGL REQUIRED)
 
-add_executable(opengl-by-glfw src/main.cpp)
+add_executable(opengl-by-glfw src/main.cpp src/program.cpp src/box.cpp)
 
 target_link_libraries(opengl-by-glfw OpenGL::GL CONAN_PKG::glfw CONAN_PKG::glm)
