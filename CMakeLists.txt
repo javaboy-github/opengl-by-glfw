@@ -18,9 +18,7 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
-conan_basic_setup(TARGETS)
 conan_cmake_autodetect(settings)
 
 conan_cmake_install(PATH_OR_REFERENCE ..
@@ -28,6 +26,8 @@ conan_cmake_install(PATH_OR_REFERENCE ..
                     REMOTE conancenter
                     SETTINGS ${settings}
                     GENERATOR cmake;cmake_find_package)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
 
 find_package(OpenGL REQUIRED)
 

@@ -4,7 +4,6 @@
 #include <glm/vec3.hpp>
 #include <GLFW/glfw3.h>
 
-
 namespace box {
 	Box::Box(glm::vec3 pos, program::Program& program): pos(pos), program(program) {}
 
