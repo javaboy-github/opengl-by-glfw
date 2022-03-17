@@ -1,9 +1,9 @@
-#include "box.hpp"
-#include "program.hpp"
+#include <GL/glew.h>
 #include <glm/fwd.hpp>
 #include <glm/vec3.hpp>
 #include <GLFW/glfw3.h>
-#include <GL/glew.h>
+#include "box.hpp"
+#include "program.hpp"
 
 namespace box {
 	Box::Box(glm::vec3 pos, program::Program& program): pos(pos), program(program) {}
@@ -43,7 +43,7 @@ namespace box {
 	}
 
 	NormalBox::~NormalBox() {
-		glDeleteVertexArrays(this->vao);
+		glDeleteVertexArrays(1, &(this->vao));
 		glDeleteBuffers(1, &(this->vao));
 		glDeleteBuffers(1, &(this->ibo));
 	}
