@@ -6,6 +6,15 @@
 #include "program.hpp"
 
 namespace box {
+	const GLuint index[36] = {
+    0, 1, 2, 0, 2, 3, // 左
+    0, 3, 4, 0, 4, 5, // 裏
+    0, 5, 6, 0, 6, 1, // 下
+    7, 6, 5, 7, 5, 4, // 右
+    7, 4, 3, 7, 3, 2, // 上
+    7, 2, 1, 7, 1, 6  // 前
+  };
+
 	Box::Box(glm::vec3 pos, program::Program& program): pos(pos), program(program) {}
 
 	NormalBox::NormalBox(glm::vec3 pos, glm::vec3 boxsize, program::Program& program): Box(pos, program), 
