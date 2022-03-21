@@ -1,5 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include <glm/mat4x4.hpp>
 #include <string>
 
 namespace program {
@@ -16,6 +17,7 @@ namespace program {
 		void set(std::string name, bool value);
 		void set(std::string name, int value);
 		void set(std::string name, float value);
+		void set(std::string name, glm::mat4 value);
 
 		Program createFromSourcefile(std::string vertexShaderSourceFilename, std::string fragmentShaderSourceFilename);
 	};

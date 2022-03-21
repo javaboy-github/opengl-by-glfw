@@ -22,9 +22,9 @@ namespace box {
 	
 	class NormalBox: public Box {
 		private:
-			GLuint vao;
-			GLuint vbo;
-			GLuint ibo;
+			unsigned int vao;
+			unsigned int vbo;
+			unsigned int ibo;
 			const Vertex vertex[8];
 
 

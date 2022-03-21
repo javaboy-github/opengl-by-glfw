@@ -5,6 +5,8 @@
 #include "box.hpp"
 #include "program.hpp"
 
+#include <iostream>
+
 namespace box {
 	const GLuint index[36] = {
     0, 1, 2, 0, 2, 3, // 左
@@ -28,7 +30,10 @@ namespace box {
     Vertex{ boxsize.x/2 + pos.x, -boxsize.y/2 + pos.y,  boxsize.z/2 + pos.z, 0.8f, 0.8f, 0,  }, // 6
     Vertex{ boxsize.x/2 + pos.x,  boxsize.y/2 + pos.y,  boxsize.z/2 + pos.z, 0.8f, 0.8f, 0.8f}, // 7
 	}{
-		glGenBuffers(1, &(this->vbo));
+    glGenVertexArrays(1, &(this->vao));
+    glBindVertexArray(vao);
+
+		glGenBuffers(1, &(this->vbo)); // err in this line
 		glBindVertexArray(this->vbo);
 
 		glGenBuffers(1, &(this->vbo));
