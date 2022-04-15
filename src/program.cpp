@@ -7,7 +7,7 @@
 #include <glm/mat4x4.hpp>
 
 namespace program {
-	Program::Program(std::string vertex, std::string fragment): program(glCreateProgram()) {
+	Program::Program(std::string vertex, std::string fragment): program(glCreateProgram()), isLinked(false) {
 			const char *vertexChar = vertex.c_str();
 			GLuint vobj = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vobj, 1, &vertexChar, NULL);
@@ -46,10 +46,15 @@ namespace program {
 			glAttachShader(program, fobj);
 			glDeleteShader(fobj);
 
-			glLinkProgram(program);
 		};
 
+		void Program::link() {
+			if (isLinked) throw "This program is alredy linked;";
+			glLinkProgram(program);
+			isLinked = true;
+		}
 		void Program::use() const {
+			if (!isLinked) throw "You need to call Program::link() to call Program::use()";
 			glUseProgram(this->program);
 		}
 

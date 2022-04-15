@@ -33,9 +33,6 @@ namespace box {
     glGenVertexArrays(1, &(this->vao));
     glBindVertexArray(vao);
 
-		glGenBuffers(1, &(this->vbo)); // err in this line
-		glBindVertexArray(this->vbo);
-
 		glGenBuffers(1, &(this->vbo));
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(this->vertex), vertex, GL_STATIC_DRAW);
@@ -43,7 +40,7 @@ namespace box {
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), static_cast<char *>(0) + sizeof this->vertex->position);
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 
 		glGenBuffers(1, &(this->ibo));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);

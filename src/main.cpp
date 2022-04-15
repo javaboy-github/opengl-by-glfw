@@ -20,8 +20,10 @@ class Window {
 	GLFWwindow *const window;
 
 	public:
+	int width, height;
+
 	Window(int width, int height, std::string title)
-		: window(glfwCreateWindow(width, height, title.c_str(), NULL, NULL)) {
+		: window(glfwCreateWindow(width, height, title.c_str(), NULL, NULL)), width(width), height(height) {
 			if (window == NULL) {
 				std::cout << "Cannot create GLFW Window!";
 				std::exit(1);
@@ -29,6 +31,7 @@ class Window {
 			
 			glfwMakeContextCurrent(window);
 			glfwSwapInterval(1);
+    glfwSetWindowUserPointer(window, this);
 	}
 
 	GLFWwindow* getWindow() const {return window;}
@@ -41,21 +44,31 @@ class Window {
 		glfwDestroyWindow(window);
 	}
 
-  void static resize(GLFWwindow* arg1, int arg2, int arg3) {
-		int width  = 0;
-		int height = 0;
-		glfwGetFramebufferSize(arg1, &width, &height);
-		glViewport(0, 0, width, height);
-	};
-
 	void setViewportAutomatic() {
 		int width, height;
 
 		glfwSetWindowSizeCallback(this->window, resize);
-
-		glfwGetFramebufferSize(this->window, &width, &height);
-		glViewport(0, 0, width, height);
+		resize(window, 0, 0);
 	}
+
+  void static resize(GLFWwindow* arg1, int arg2, int arg3) {
+		int width  = 0;
+		int height = 0;
+		glfwGetFramebufferSize(arg1, &width, &height);
+		std::cout << width << " " << height << std::endl;
+		glViewport(0, 0, width, height);
+
+		
+    Window *const
+      instance(static_cast<Window *>(glfwGetWindowUserPointer(arg1)));
+
+    if (instance != NULL) {
+      // 開いたウィンドウのサイズを保存する
+      instance->width  = static_cast<GLfloat>(width);
+      instance->height = static_cast<GLfloat>(height);
+    }
+	};
+
 };
 
 int main() {
@@ -74,6 +87,7 @@ int main() {
 
 	Window window(1260, 960, "opengl-by-glfw");
 	window.show();
+	window.setViewportAutomatic();
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
@@ -81,6 +95,8 @@ int main() {
 	}
 
 	glfwSwapInterval(1);
+
+	
 
 	program::Program program(R"(
 #version 150 core
@@ -108,9 +124,10 @@ void main() {
 	glBindAttribLocation(program.program, 0, "position");
 	glBindAttribLocation(program.program, 1, "color");
 	glBindFragDataLocation(program.program, 0, "fragment");
+	program.link();
 	box::NormalBox box(vec3(0, 0, 0), vec3(1, 1, 1), program);
 
-	vec3 pos(0, 0, -1);
+	vec3 pos(0, 0, -3);
 
 	glClearColor(1, 1, 1, 0);
 	glEnable(GL_TEXTURE_2D);
@@ -124,11 +141,16 @@ void main() {
 		mat4 model(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 		mat4 view = glm::lookAt(pos, pointOfView + pos, vec3(0, 1, 0));
 		mat4 modelview = view * model;
-		mat4 projection(glm::frustum(0.0, 1260.0, 960.0, 0.0, 0.1, 1000.0));
+		mat4 projection(glm::frustum(0.0, window.width + 0.0, window.height + 0.0, 0.0, 0.1, 1000.0));
 
 		program.set("modelview", modelview);
 		program.set("projection", projection);
 		box.draw();
+
+		if (glfwGetKey(window, GLFW_KEY_W) != GLFW_RELEASE) pos = pos + vec3(0, 0, 1);
+		if (glfwGetKey(window, GLFW_KEY_S) != GLFW_RELEASE) pos = pos + vec3(0, 0, -1);
+		if (glfwGetKey(window, GLFW_KEY_A) != GLFW_RELEASE) pos = pos + vec3(1, 0, 0);
+		if (glfwGetKey(window, GLFW_KEY_D) != GLFW_RELEASE) pos = pos + vec3(-1, 0, 0);
 
 		
 		glfwSwapBuffers(window);
@@ -140,5 +162,8 @@ void main() {
 	
 	}catch(std::string s ) {
 		std::cout << s << std::endl;
+	}catch(char* s ) {
+		std::cout << s << std::endl;
 	}
+	
 }

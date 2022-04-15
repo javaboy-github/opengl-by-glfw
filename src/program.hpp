@@ -10,6 +10,10 @@ namespace program {
 
 			Program(std::string vertex, std::string fragment);
 
+		private:
+			bool isLinked;
+		public:
+			void link();
 			void use() const;
 		private:
 			GLint getLoc(std::string name);
