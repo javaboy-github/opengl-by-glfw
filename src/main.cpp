@@ -40,6 +40,22 @@ class Window {
 	~Window() {
 		glfwDestroyWindow(window);
 	}
+
+  void static resize(GLFWwindow* arg1, int arg2, int arg3) {
+		int width  = 0;
+		int height = 0;
+		glfwGetFramebufferSize(arg1, &width, &height);
+		glViewport(0, 0, width, height);
+	};
+
+	void setViewportAutomatic() {
+		int width, height;
+
+		glfwSetWindowSizeCallback(this->window, resize);
+
+		glfwGetFramebufferSize(this->window, &width, &height);
+		glViewport(0, 0, width, height);
+	}
 };
 
 int main() {
@@ -89,9 +105,17 @@ void main() {
  fragment = vertex_color;
 }
 )");
+	glBindAttribLocation(program.program, 0, "position");
+	glBindAttribLocation(program.program, 1, "color");
+	glBindFragDataLocation(program.program, 0, "fragment");
 	box::NormalBox box(vec3(0, 0, 0), vec3(1, 1, 1), program);
 
 	vec3 pos(0, 0, -1);
+
+	glClearColor(1, 1, 1, 0);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
 
 	while (glfwWindowShouldClose(window) == GL_FALSE) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,6 +130,7 @@ void main() {
 		program.set("projection", projection);
 		box.draw();
 
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
